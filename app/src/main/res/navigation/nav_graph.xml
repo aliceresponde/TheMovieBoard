@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/popularMovieFragment">
+
+    <fragment
+        android:id="@+id/popularMovieFragment"
+        android:name="com.aliceresponde.themovieboard.ui.main.PopularMovieFragment"
+        android:label="PopularMovieFragment"
+        tools:layout="@layout/fragment_popular_movie">
+        <action
+            android:id="@+id/action_popularMovieFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/popularSeriesFragment"
+        android:name="com.aliceresponde.themovieboard.ui.main.PopularSeriesFragment"
+        android:label="PopularSeriesFragment"
+        tools:layout="@layout/fragment_popular_serie">
+        <action
+            android:id="@+id/action_popularSeriesFragment_to_detailActivity"
+            app:destination="@id/detailActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/detailActivity"
+        android:name="com.aliceresponde.themovieboard.ui.detail.DetailActivity"
+        android:label="DetailActivity"
+        tools:layout="@layout/activity_detail" />
+
+
+</navigation>

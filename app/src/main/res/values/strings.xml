@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">TheMovieBoard</string>
+    <string name="movies">Movies</string>
+    <string name="series">Series</string>
+    <string name="favorite">Favorite</string>
+    <string name="rated_movies">Rated Movies</string>
+    <string name="popular_movies">Popular Movies</string>
+</resources>
