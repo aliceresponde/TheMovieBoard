@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/popularMovieFragment"
-        android:name="com.aliceresponde.themovieboard.ui.main.PopularMovieFragment"
+        android:name="com.aliceresponde.themovieboard.ui.main.movie.PopularMovieFragment"
         android:label="PopularMovieFragment"
         tools:layout="@layout/fragment_popular_movie">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/popularSeriesFragment"
-        android:name="com.aliceresponde.themovieboard.ui.main.PopularSeriesFragment"
+        android:name="com.aliceresponde.themovieboard.ui.main.serie.PopularSeriesFragment"
         android:label="PopularSeriesFragment"
         tools:layout="@layout/fragment_popular_serie">
         <action

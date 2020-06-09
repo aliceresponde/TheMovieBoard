@@ -3,14 +3,15 @@ package com.aliceresponde.themovieboard.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import com.aliceresponde.themovieboard.BuildConfig
 import com.aliceresponde.themovieboard.R
-import com.aliceresponde.themovieboard.ui.ShowItem
+import com.aliceresponde.themovieboard.ui.model.ShowItem
 import kotlinx.android.synthetic.main.entretaiment_item.view.*
 
-class EntertainmentAdapter(var list: MutableList<ShowItem>, val listener: Listener) :
+class EntertainmentAdapter(var list: List<ShowItem>, val listener: Listener) :
     RecyclerView.Adapter<EntertainmentAdapter.MovieSerieHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieSerieHolder {
@@ -25,10 +26,13 @@ class EntertainmentAdapter(var list: MutableList<ShowItem>, val listener: Listen
         holder.onBind(list[position])
     }
 
-    fun updateData(mList: List<ShowItem>) {
-        list.clear()
-        list.addAll(mList)
-        notifyDataSetChanged()
+    fun updateData(newItemList: List<ShowItem>) {
+        val oldList = list
+        val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(
+            ShowItemDiffCallback(oldList, newItemList)
+        )
+        list = newItemList
+        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class MovieSerieHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -42,6 +46,23 @@ class EntertainmentAdapter(var list: MutableList<ShowItem>, val listener: Listen
                 releaseDate.text = item.date
                 cardContainer.setOnClickListener { listener.onItemClickListener(item) }
             }
+        }
+    }
+
+    class ShowItemDiffCallback(
+        var oldItemList: List<ShowItem>,
+        var newItemList: List<ShowItem>
+    ) : DiffUtil.Callback() {
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItemList[oldItemPosition].id == newItemList[newItemPosition].id
+        }
+
+        override fun getOldListSize(): Int = oldItemList.size
+
+        override fun getNewListSize(): Int = newItemList.size
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldItemList[oldItemPosition] == newItemList[newItemPosition]
         }
     }
 

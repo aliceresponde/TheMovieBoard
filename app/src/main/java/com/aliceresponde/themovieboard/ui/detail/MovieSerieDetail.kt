@@ -1,4 +1,4 @@
-package com.aliceresponde.themovieboard.ui
+package com.aliceresponde.themovieboard.ui.detail
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

@@ -1,4 +1,4 @@
-package com.aliceresponde.themovieboard.ui.main
+package com.aliceresponde.themovieboard.ui.main.serie
 
 import androidx.lifecycle.ViewModel
 

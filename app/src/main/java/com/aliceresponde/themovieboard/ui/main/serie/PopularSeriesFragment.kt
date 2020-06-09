@@ -1,4 +1,4 @@
-package com.aliceresponde.themovieboard.ui.main
+package com.aliceresponde.themovieboard.ui.main.serie
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.databinding.FragmentPopularSerieBinding
+import com.aliceresponde.themovieboard.ui.main.serie.SeriesViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 class PopularSeriesFragment : Fragment(), MaterialSearchBar.OnSearchActionListener {

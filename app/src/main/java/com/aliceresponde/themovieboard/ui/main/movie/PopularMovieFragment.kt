@@ -1,4 +1,4 @@
-package com.aliceresponde.themovieboard.ui.main
+package com.aliceresponde.themovieboard.ui.main.movie
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,10 +8,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.databinding.FragmentPopularMovieBinding
+import com.aliceresponde.themovieboard.ui.main.movie.MoviesViewModel
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 class PopularMovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener {
     lateinit var binding: FragmentPopularMovieBinding
+    lateinit var viewModel: MoviesViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
