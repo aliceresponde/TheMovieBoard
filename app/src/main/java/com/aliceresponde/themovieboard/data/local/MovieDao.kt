@@ -1,5 +1,6 @@
 package com.aliceresponde.themovieboard.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -8,22 +9,22 @@ import androidx.room.Query
 @Dao
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(items: List<Movie>)
+    suspend fun insertAll(items: List<Movie>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveMovie(movie: Movie)
 
     @Query("SELECT * FROM movies WHERE  UPPER(title) LIKE '%' || UPPER(:value) || '%' limit 30")
-    fun getMoviesByTitle(value: String): List<Movie>
+    fun getMoviesByTitle(value: String): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movies")
-    fun getAllMovies(): List<Movie>
+    fun getAllMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movies ORDER BY popularity DESC")
-    fun getPopularMovies(): List<Movie>
+    fun getPopularMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movies ORDER BY vote_average DESC")
-    fun getRatedMovies(): List<Movie>
+    fun getRatedMovies(): LiveData<List<Movie>>
 
     @Query(value = "SELECT COUNT(id) FROM movies")
     fun countMovies(): Int

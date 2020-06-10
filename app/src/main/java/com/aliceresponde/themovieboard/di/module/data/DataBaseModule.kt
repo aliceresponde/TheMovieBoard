@@ -12,11 +12,7 @@ class DataBaseModule {
 
     @Singleton
     @Provides
-    fun provideDataBase(context: Context): MoviesDatabase =
-        Room.databaseBuilder(
-            context,
-            MoviesDatabase::class.java, MoviesDatabase.DATABASE_NAME
-        ).build()
+    fun provideDataBase(context: Context): MoviesDatabase = MoviesDatabase.invoke(context)
 
     @Singleton
     @Provides

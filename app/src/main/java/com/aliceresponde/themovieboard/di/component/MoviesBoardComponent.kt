@@ -25,15 +25,11 @@ interface MoviesBoardComponent {
 //    val seriesViewModel: SeriesViewModel
 //    val detailViewModel: DetailViewModel
 
-    @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance app: Application): MoviesBoardComponent
-    }
-
-    fun inject(app: MovieApp)
-
-
-    //    @Component.Factory method is missing parameters for required modules or components
-    //fun appComponent(appComponent: AppComponent): Builder
+//    @Component.Factory
+//    interface Factory {
+//        fun create(@BindsInstance app: Application): MoviesBoardComponent
+//    }
+//
+//    fun inject(app: MovieApp)
 
 }

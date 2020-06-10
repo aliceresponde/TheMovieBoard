@@ -1,28 +1,39 @@
 package com.aliceresponde.themovieboard.data.repository
 
+import androidx.lifecycle.LiveData
+import com.aliceresponde.themovieboard.data.local.Movie
 import com.aliceresponde.themovieboard.data.local.MovieDao
 import com.aliceresponde.themovieboard.data.remote.MoviesApi
 import com.aliceresponde.themovieboard.data.remote.response.MoviesResponse
 import com.aliceresponde.themovieboard.toMovieEntity
-import com.aliceresponde.themovieboard.toShowItem
-import com.aliceresponde.themovieboard.ui.model.ShowItem
 import retrofit2.Response
 
+// FIXME: 10/06/20  user dataSouce to decouple repository
 class MoviesRepositoryImpl(
     private val movieDao: MovieDao,
     private val service: MoviesApi
 ) : MoviesRepository {
 
-    override suspend fun getPopularMovies(): List<ShowItem> {
-        val response = service.getPopularMovies()
-        saveMoviesFromRemote(response)
-        return movieDao.getPopularMovies().map { it.toShowItem() }
-    }
-
-    override suspend fun getRatedMovies(): List<ShowItem> {
+    override suspend fun syncRatedMovies() {
         val response = service.getTopRatedMovies()
         saveMoviesFromRemote(response)
-        return movieDao.getRatedMovies().map { it.toShowItem() }
+    }
+
+    override fun getMovieByName(name: String): LiveData<List<Movie>> {
+        return movieDao.getMoviesByTitle(name)
+    }
+
+    override suspend fun syncPopularMovies() {
+        val response = service.getPopularMovies()
+        saveMoviesFromRemote(response)
+    }
+
+    override fun getPopularMovies(): LiveData<List<Movie>> {
+        return movieDao.getPopularMovies()
+    }
+
+    override fun getRatedMovies(): LiveData<List<Movie>> {
+        return movieDao.getRatedMovies()
     }
 
     override suspend fun getMovieVideo(movieId: Int): String {
@@ -40,20 +51,22 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override suspend fun searchMoviesByName(name: String): List<ShowItem> {
+    override suspend fun searchMoviesByName(name: String): LiveData<List<Movie>> {
         val response = service.searchMovie(name)
         saveMoviesFromRemote(response)
-        return movieDao.getMoviesByTitle(name).map { it.toShowItem() }
+        return movieDao.getMoviesByTitle(name)
     }
 
-    override suspend fun getMovieById(movieId: Int): ShowItem {
-        return movieDao.getMovieById(movieId).toShowItem()
+    override suspend fun getMovieById(movieId: Int): Movie {
+        return movieDao.getMovieById(movieId)
     }
 
-    private fun saveMoviesFromRemote(response: Response<MoviesResponse>) {
+    private suspend fun saveMoviesFromRemote(response: Response<MoviesResponse>) {
         if (response.isSuccessful) {
             response.body()?.movies?.run {
-                map { it.toMovieEntity() }.also { movieDao.insertAll(it) }
+                map { it.toMovieEntity() }.also {
+                    movieDao.insertAll(it)
+                }
             }
         }
     }

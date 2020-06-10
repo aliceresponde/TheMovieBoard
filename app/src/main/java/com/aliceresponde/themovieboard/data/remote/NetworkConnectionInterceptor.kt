@@ -10,6 +10,7 @@ import okhttp3.Response
 class NetworkConnectionInterceptor(context: Context) : Interceptor {
     private val appContext = context.applicationContext
 
+
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!idInternetAvailable()) throw NoInternetException(
             "Verify your data connection"
