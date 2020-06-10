@@ -15,8 +15,8 @@ data class Serie(
     val date: String,
     @ColumnInfo(name="poster_path")
     val imageUrl: String,
-    val popularity: Float,
     @ColumnInfo(name="vote_average")
     val voteAverage: Float,
+    val popularity: Float,
     val videoKey: String =""
 )

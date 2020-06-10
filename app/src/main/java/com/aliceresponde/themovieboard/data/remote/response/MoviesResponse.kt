@@ -1,5 +1,8 @@
 package com.aliceresponde.themovieboard.data.remote.response
 
+import com.google.gson.annotations.SerializedName
+
 data class MoviesResponse(
-    val results : List<MovieResult>
+    @SerializedName("results")
+    val movies : List<MovieResult>
 )

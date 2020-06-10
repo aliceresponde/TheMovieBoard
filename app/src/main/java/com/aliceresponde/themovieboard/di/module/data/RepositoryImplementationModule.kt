@@ -7,17 +7,20 @@ import com.aliceresponde.themovieboard.data.repository.MoviesRepositoryImpl
 import com.aliceresponde.themovieboard.data.repository.SeriesRepositoryImpl
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
-interface RepositoryImplementationModule {
+class RepositoryImplementationModule {
     @Provides
+    @Singleton
     fun provideMoviesRepositoryImpl(
         movieDao: MovieDao,
         service: MoviesApi
     ) = MoviesRepositoryImpl(movieDao, service)
 
     @Provides
-    fun provideSeriesRepositortImpl(
+    @Singleton
+    fun provideSeriesRepositoryImpl(
         serieDao: SerieDao,
         service: MoviesApi
     ) = SeriesRepositoryImpl(serieDao, service)

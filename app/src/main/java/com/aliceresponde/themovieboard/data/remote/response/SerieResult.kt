@@ -11,5 +11,6 @@ data class SerieResult(
     @SerializedName("poster_path")
     val imageUrl: String,
     @SerializedName("vote_average")
-    val voteAverage: Float
+    val voteAverage: Float,
+    val popularity: Float
 )

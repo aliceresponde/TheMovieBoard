@@ -1,4 +1,4 @@
-package com.aliceresponde.themovieboard.di.module
+package com.aliceresponde.themovieboard.di.module.data
 
 import com.aliceresponde.themovieboard.di.module.data.DataBaseModule
 import com.aliceresponde.themovieboard.di.module.data.NetworkModule

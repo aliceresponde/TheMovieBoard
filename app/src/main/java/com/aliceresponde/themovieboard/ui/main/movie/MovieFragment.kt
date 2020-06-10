@@ -6,22 +6,52 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.aliceresponde.themovieboard.R
-import com.aliceresponde.themovieboard.databinding.FragmentPopularMovieBinding
-import com.aliceresponde.themovieboard.ui.main.movie.MoviesViewModel
+import com.aliceresponde.themovieboard.databinding.FragmentMoviesBinding
+import com.aliceresponde.themovieboard.ui.main.ShowItemsAdapter
+import com.aliceresponde.themovieboard.ui.model.ShowItem
 import com.mancj.materialsearchbar.MaterialSearchBar
+import javax.inject.Inject
 
-class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener {
-    lateinit var binding: FragmentPopularMovieBinding
-    lateinit var viewModel: MoviesViewModel
+class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
+    ShowItemsAdapter.Listener {
+
+    @Inject
+    lateinit var factory: MoviesViewModelFactory
+    lateinit var binding: FragmentMoviesBinding
+
+    val adapter: ShowItemsAdapter by lazy {
+        ShowItemsAdapter(listOf(), this)
+    }
+    val viewModel: MoviesViewModel by lazy {
+        ViewModelProvider(this, factory).get(MoviesViewModel::class.java)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater,
-            R.layout.fragment_popular_movie, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_movies, container, false
+        )
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+        binding.recycler.adapter = adapter
         binding.searchBar.setOnSearchActionListener(this)
+        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.type_popular -> viewModel.getPopularMovies()
+                else -> viewModel.getRatedMovies()
+            }
+        }
+
+        viewModel.movies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
+
         return binding.root
     }
 
@@ -30,13 +60,15 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener {
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
-        if (!enabled){
-            //todo get moview by
-        }
-            // getMovies(searchMovieType = searchMovieType)
+        TODO("Not yet implemented")
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
         TODO("Not yet implemented")
     }
+
+    override fun onItemClickListener(item: ShowItem) {
+        TODO("Not yet implemented")
+    }
+
 }

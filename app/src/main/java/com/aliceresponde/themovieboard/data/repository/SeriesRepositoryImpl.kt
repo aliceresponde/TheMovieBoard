@@ -1,83 +1,61 @@
 package com.aliceresponde.themovieboard.data.repository
 
-import android.util.Log
-import androidx.lifecycle.LiveData
 import com.aliceresponde.themovieboard.data.local.SerieDao
 import com.aliceresponde.themovieboard.data.remote.MoviesApi
-import com.aliceresponde.themovieboard.data.remote.NoInternetException
-import com.aliceresponde.themovieboard.data.remote.response.MoviesResponse
-import com.aliceresponde.themovieboard.serietoShow
+import com.aliceresponde.themovieboard.data.remote.response.SerieResponse
 import com.aliceresponde.themovieboard.toSerieEntity
 import com.aliceresponde.themovieboard.toShowItem
 import com.aliceresponde.themovieboard.ui.model.ShowItem
 import retrofit2.Response
-
-typealias SeriesItems = List<ShowItem>
 
 class SeriesRepositoryImpl(
     private val serieDao: SerieDao,
     private val service: MoviesApi
 ) : SeriesRepository {
 
-    override suspend fun getPopularSeries(): LiveData<ShowItems> {
-        return try {
-            val response = service.getPopularSerie()
-            saveMoviesFromRemote(response)
-            serieDao.getPopularSeries().serietoShow()
-        } catch (e: NoInternetException) {
-            Log.d("TAG", e.message)
-            serieDao.getPopularSeries().serietoShow()
-        }
+    override suspend fun getPopularSeries(): List<ShowItem> {
+        val response = service.getPopularSerie()
+        saveSeriesFromRemote(response)
+        return serieDao.getPopularSeries().map { it.toShowItem() }
     }
 
-    override suspend fun getRatedSeries(): LiveData<ShowItems> {
-        return try {
-            val response = service.getTopRatedSeries()
-            saveMoviesFromRemote(response)
-            serieDao.getRatedSeries().serietoShow()
-        } catch (e: NoInternetException) {
-            Log.d("TAG", e.message)
-            serieDao.getRatedSeries().serietoShow()
-        }
+    override suspend fun getRatedSeries(): List<ShowItem> {
+        val response = service.getTopRatedSeries()
+        saveSeriesFromRemote(response)
+        return serieDao.getRatedSeries().map { it.toShowItem() }
     }
 
     override suspend fun getSerieVideo(serieId: Int): String {
-        return try {
-            val response = service.getSerieVideos(serieId)
-            if (response.isSuccessful) {
-                response.body()?.results?.first()?.videoId ?: ""
-            } else {
-                ""
-            }
-        } catch (e: NoInternetException) {
-            Log.d("TAG", e.message)
-            return ""
+        val response = service.getSerieVideos(serieId)
+        var videoKey = ""
+        return if (response.isSuccessful) {
+            response.body()?.id
+            videoKey = response.body()?.let {
+                it.results.first().videoId
+            } ?: ""
+            serieDao.updateVideo(serieId, videoKey)
+            videoKey
+        } else {
+            videoKey
         }
     }
 
-    override suspend fun searchSerieByName(name: String): LiveData<ShowItems> {
-        return try {
-            val response = service.searchSerie(name)
-            saveMoviesFromRemote(response)
-            serieDao.getSeriesByName(name).serietoShow()
-        } catch (e: NoInternetException) {
-            Log.d("TAG", e.message)
-            serieDao.getSeriesByName(name).serietoShow()
-        }
+    override suspend fun searchSerieByName(name: String): List<ShowItem> {
+        val response = service.searchSerie(name)
+        saveSeriesFromRemote(response)
+        return serieDao.getSeriesByName(name).map { it.toShowItem() }
     }
+
 
     override suspend fun getSerieById(serieId: Int): ShowItem {
         return serieDao.getSerieById(serieId).toShowItem()
     }
 
-    private suspend fun saveMoviesFromRemote(response: Response<MoviesResponse>) {
+    private fun saveSeriesFromRemote(response: Response<SerieResponse>) {
         if (response.isSuccessful) {
-            response.body()?.results?.run {
-                map { it.toSerieEntity() }.also {
-                    serieDao.insertAll(it)
-                }
+            response.body()?.series?.run {
+                map { it.toSerieEntity() }.also { serieDao.insertAll(it) }
             }
         }
     }
-
 }

@@ -11,8 +11,8 @@ import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.ui.model.ShowItem
 import kotlinx.android.synthetic.main.entretaiment_item.view.*
 
-class EntertainmentAdapter(var list: List<ShowItem>, val listener: Listener) :
-    RecyclerView.Adapter<EntertainmentAdapter.MovieSerieHolder>() {
+class ShowItemsAdapter(var list: List<ShowItem>, val listener: Listener) :
+    RecyclerView.Adapter<ShowItemsAdapter.MovieSerieHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieSerieHolder {
         val inflater = LayoutInflater.from(parent.context)

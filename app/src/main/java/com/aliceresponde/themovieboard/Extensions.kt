@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.aliceresponde.themovieboard.data.local.Movie
 import com.aliceresponde.themovieboard.data.local.Serie
 import com.aliceresponde.themovieboard.data.remote.response.MovieResult
+import com.aliceresponde.themovieboard.data.remote.response.SerieResult
 import com.aliceresponde.themovieboard.ui.model.ShowItem
 
 fun MovieResult.toMovieEntity(): Movie {
@@ -20,10 +21,10 @@ fun MovieResult.toMovieEntity(): Movie {
     )
 }
 
-fun MovieResult.toSerieEntity(): Serie {
+fun SerieResult.toSerieEntity(): Serie {
     return Serie(
         id = id,
-        name = title,
+        name = name,
         overview = overview,
         date = date,
         imageUrl = imageUrl,
