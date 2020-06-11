@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -12,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.aliceresponde.themovieboard.MovieApp
 import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.databinding.FragmentMoviesBinding
+import com.aliceresponde.themovieboard.hideKeyboard
 import com.aliceresponde.themovieboard.ui.main.ShowItemsAdapter
 import com.aliceresponde.themovieboard.ui.model.ShowItem
 import com.mancj.materialsearchbar.MaterialSearchBar
@@ -23,10 +26,9 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     lateinit var factory: MoviesViewModelFactory
     lateinit var viewModel: MoviesViewModel
     lateinit var binding: FragmentMoviesBinding
+    lateinit var dialog : AlertDialog.Builder
 
-    val adapter: ShowItemsAdapter by lazy {
-        ShowItemsAdapter(listOf(), this)
-    }
+    val adapter: ShowItemsAdapter by lazy { ShowItemsAdapter(listOf(), this) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,6 +39,12 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         binding.lifecycleOwner = this
 
         val app = (activity?.application) as MovieApp
+
+        activity?.let {
+            dialog = AlertDialog.Builder(it)
+            dialog.setMessage(getString(R.string.no_internet_message))
+        }
+
         factory = MoviesViewModelFactory(app.provideMoviesRepository())
         viewModel = ViewModelProvider(this, factory).get(MoviesViewModel::class.java)
         binding.viewModel = viewModel
@@ -45,17 +53,23 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         binding.searchBar.setOnSearchActionListener(this)
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-                R.id.type_popular -> viewModel.fetchPopularMovies()
-                else -> viewModel.fetchRatedMovies()
+                R.id.type_popular -> viewModel.getPopularMovies()
+                else -> viewModel.getRatedMpvies()
             }
         }
 
-        viewModel.fetchPopularMovies()
-        viewModel.popularMovies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
-        viewModel.ratedMovies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
-        viewModel.moviesByName.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
+        viewModel.getPopularMovies()
+        viewModel.movies.observe(viewLifecycleOwner, Observer { cleanAndSet(it) })
+        viewModel.isInternetOn.observe(viewLifecycleOwner, Observer {
+            if (it)
+                dialog.show()
+        })
 
         return binding.root
+    }
+
+    private fun cleanAndSet(it: List<ShowItem>) {
+        adapter.updateData(it)
     }
 
 
@@ -67,6 +81,7 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
+        hideKeyboard()
         viewModel.fetchMoviesByName(text.toString())
     }
 

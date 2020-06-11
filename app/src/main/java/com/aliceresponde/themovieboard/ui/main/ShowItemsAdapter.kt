@@ -40,6 +40,7 @@ class ShowItemsAdapter(var list: List<ShowItem>, val listener: Listener) :
             itemView.apply {
                 image.load(item.imageUrl) {
                     crossfade(true)
+                    error(R.drawable.ic_movie)
                     placeholder(R.drawable.ic_movie)
                 }
                 title.text = item.name

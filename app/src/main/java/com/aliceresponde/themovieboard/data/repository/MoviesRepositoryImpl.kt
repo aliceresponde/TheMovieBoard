@@ -13,8 +13,12 @@ class MoviesRepositoryImpl(
     private val movieDao: MovieDao,
     private val service: MoviesApi
 ) : MoviesRepository {
+    override suspend fun fetchPopularMovies() {
+        val response = service.getPopularMovies()
+        saveMoviesFromRemote(response)
+    }
 
-    override suspend fun syncRatedMovies() {
+    override suspend fun fetchRatedMovies() {
         val response = service.getTopRatedMovies()
         saveMoviesFromRemote(response)
     }
@@ -24,40 +28,30 @@ class MoviesRepositoryImpl(
         saveMoviesFromRemote(response)
     }
 
+    override suspend fun getPopularMovies(): List<Movie> {
+        return movieDao.getPopularMovies()
+    }
+
+    override suspend fun getRatedMovies(): List<Movie> {
+        return movieDao.getRatedMovies()
+    }
+
     override suspend fun getMovieByName(name: String): List<Movie> {
         return movieDao.getMoviesByTitle(name)
     }
 
-    override suspend fun syncPopularMovies() {
-        val response = service.getPopularMovies()
-        saveMoviesFromRemote(response)
-    }
-
-    override fun getPopularMovies(): LiveData<List<Movie>> {
-        return movieDao.getPopularMovies()
-    }
-
-    override fun getRatedMovies(): LiveData<List<Movie>> {
-        return movieDao.getRatedMovies()
-    }
 
     override suspend fun getMovieVideo(movieId: Int): String {
         val response = service.getMovieVideos(movieId)
         var videoKey = ""
         return if (response.isSuccessful) {
             response.body()?.id
-            videoKey = response.body()?.let {
-                it.results.first().videoId
-            } ?: ""
+            videoKey = response.body()?.results?.first()?.videoId ?: ""
             movieDao.updateVideo(movieId, videoKey)
             videoKey
         } else {
             videoKey
         }
-    }
-
-    override suspend fun getMovieById(movieId: Int): Movie {
-        return movieDao.getMovieById(movieId)
     }
 
     private suspend fun saveMoviesFromRemote(response: Response<MoviesResponse>) {
