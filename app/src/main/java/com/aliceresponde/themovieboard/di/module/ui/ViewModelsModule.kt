@@ -2,7 +2,6 @@ package com.aliceresponde.themovieboard.di.module.ui
 
 import androidx.lifecycle.ViewModel
 import com.aliceresponde.themovieboard.di.ViewModelKey
-import com.aliceresponde.themovieboard.ui.detail.DetailViewModel
 import com.aliceresponde.themovieboard.ui.main.movie.MoviesViewModel
 import com.aliceresponde.themovieboard.ui.main.serie.SeriesViewModel
 import dagger.Binds
@@ -22,8 +21,8 @@ abstract class ViewModelsModule {
     @ViewModelKey(SeriesViewModel::class)
     abstract fun bindSeriesViewModel(viewModel: SeriesViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(DetailViewModel::class)
-    abstract fun bindDetailViewModel(viewModel: DetailViewModel): ViewModel
+//    @Binds
+//    @IntoMap
+//    @ViewModelKey(DetailViewModel::class)
+//    abstract fun bindDetailViewModel(viewModel: DetailViewModel): ViewModel
 }

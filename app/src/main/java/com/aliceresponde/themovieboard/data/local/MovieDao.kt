@@ -15,7 +15,7 @@ interface MovieDao {
     fun saveMovie(movie: Movie)
 
     @Query("SELECT * FROM movies WHERE  UPPER(title) LIKE '%' || UPPER(:value) || '%' limit 30")
-    fun getMoviesByTitle(value: String): LiveData<List<Movie>>
+    suspend fun getMoviesByTitle(value: String): List<Movie>
 
     @Query("SELECT * FROM movies")
     fun getAllMovies(): LiveData<List<Movie>>

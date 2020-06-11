@@ -38,7 +38,7 @@ class ShowItemsAdapter(var list: List<ShowItem>, val listener: Listener) :
     inner class MovieSerieHolder(view: View) : RecyclerView.ViewHolder(view) {
         fun onBind(item: ShowItem) {
             itemView.apply {
-                image.load(BuildConfig.IMG_URL + item.imageUrl) {
+                image.load(item.imageUrl) {
                     crossfade(true)
                     placeholder(R.drawable.ic_movie)
                 }

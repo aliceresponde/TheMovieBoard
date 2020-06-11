@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.aliceresponde.themovieboard.MovieApp
 import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.databinding.FragmentMoviesBinding
@@ -49,33 +50,31 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
             }
         }
 
-        factory
-
         viewModel.fetchPopularMovies()
         viewModel.popularMovies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
         viewModel.ratedMovies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
+        viewModel.moviesByName.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
 
         return binding.root
     }
 
 
     override fun onButtonClicked(buttonCode: Int) {
-        TODO("Not yet implemented")
     }
 
     override fun onSearchStateChanged(enabled: Boolean) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
-        val search = viewModel.findMoviesByName(text.toString())
-        search.value?.let {
-            adapter.updateData(it)
-        }
+        viewModel.fetchMoviesByName(text.toString())
     }
 
     override fun onItemClickListener(item: ShowItem) {
-        TODO("Not yet implemented")
+        view?.let {
+            val action = MovieFragmentDirections.actionPopularMovieFragmentToDetailActivity(item)
+            findNavController().navigate(action)
+        }
     }
 
 }

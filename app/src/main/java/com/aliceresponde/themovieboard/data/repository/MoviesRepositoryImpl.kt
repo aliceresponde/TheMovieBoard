@@ -19,7 +19,12 @@ class MoviesRepositoryImpl(
         saveMoviesFromRemote(response)
     }
 
-    override fun getMovieByName(name: String): LiveData<List<Movie>> {
+    override suspend fun fetchMoviesByName(name: String) {
+        val response = service.searchMovieByName(name)
+        saveMoviesFromRemote(response)
+    }
+
+    override suspend fun getMovieByName(name: String): List<Movie> {
         return movieDao.getMoviesByTitle(name)
     }
 
@@ -51,12 +56,6 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override suspend fun searchMoviesByName(name: String): LiveData<List<Movie>> {
-        val response = service.searchMovie(name)
-        saveMoviesFromRemote(response)
-        return movieDao.getMoviesByTitle(name)
-    }
-
     override suspend fun getMovieById(movieId: Int): Movie {
         return movieDao.getMovieById(movieId)
     }
@@ -64,11 +63,8 @@ class MoviesRepositoryImpl(
     private suspend fun saveMoviesFromRemote(response: Response<MoviesResponse>) {
         if (response.isSuccessful) {
             response.body()?.movies?.run {
-                map { it.toMovieEntity() }.also {
-                    movieDao.insertAll(it)
-                }
+                map { it.toMovieEntity() }.also { movieDao.insertAll(it) }
             }
         }
     }
-
 }

@@ -40,4 +40,5 @@ class MovieApp : Application() {
 
     fun provideMoviesRepository() = moviesRepository
     fun provideSeriesRepository() = seriesRepository
+    fun provideService() = service
 }

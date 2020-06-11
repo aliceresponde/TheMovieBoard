@@ -13,7 +13,7 @@ data class Movie(
     @ColumnInfo(name = "release_date")
     val date: String,
     @ColumnInfo(name = "poster_path")
-    val imageUrl: String,
+    val imageUrl: String? ="",
     @ColumnInfo(name = "vote_average")
     val voteAverage: Float,
     val popularity: Float,

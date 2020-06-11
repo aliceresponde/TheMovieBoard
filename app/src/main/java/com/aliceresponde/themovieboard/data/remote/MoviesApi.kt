@@ -25,7 +25,7 @@ interface MoviesApi {
 
     //https://api.themoviedb.org/3/search/movie?api_key=dc444e2fa09525a80a60d5db7ff1bb07&query=Lion
     @GET("search/movie")
-    suspend fun searchMovie(@Query("query") keyWord: String): Response<MoviesResponse>
+    suspend fun searchMovieByName(@Query("query") keyWord: String): Response<MoviesResponse>
 
     // https://api.themoviedb.org/3/movie/popular?api_key=dc444e2fa09525a80a60d5db7ff1bb07
     @GET("movie/popular")
@@ -67,7 +67,7 @@ interface MoviesApi {
 
             return Retrofit.Builder()
                 .client(okHttpClient)
-                .baseUrl("https://api.themoviedb.org/3/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(MoviesApi::class.java)

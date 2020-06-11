@@ -1,7 +1,6 @@
 package com.aliceresponde.themovieboard
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.aliceresponde.themovieboard.data.local.Movie
 import com.aliceresponde.themovieboard.data.local.Serie
@@ -39,7 +38,7 @@ fun Movie.toShowItem(): ShowItem {
         id = id,
         name = title,
         date = date,
-        imageUrl = BuildConfig.IMG_URL + imageUrl,
+        imageUrl = if (imageUrl!= null) BuildConfig.IMG_URL + imageUrl else "",
         overview = overview,
         videoKey = videoKey
     )
@@ -52,7 +51,7 @@ fun Serie.toShowItem(): ShowItem {
         date = date,
         imageUrl = BuildConfig.IMG_URL + imageUrl,
         overview = overview,
-        videoKey = videoKey
+        videoKey = BuildConfig.VIDEO_URL + videoKey
     )
 }
 

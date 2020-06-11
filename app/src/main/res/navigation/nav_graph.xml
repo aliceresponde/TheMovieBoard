@@ -17,7 +17,7 @@
             app:exitAnim="@anim/fade_out_left" />
     </fragment>
     <fragment
-        android:id="@+id/popularSeriesFragment"
+        android:id="@+id/SeriesFragment"
         android:name="com.aliceresponde.themovieboard.ui.main.serie.SeriesFragment"
         android:label="PopularSeriesFragment"
         tools:layout="@layout/fragment_popular_serie">
@@ -33,6 +33,10 @@
         <argument
             android:name="showItem"
             app:argType="com.aliceresponde.themovieboard.ui.model.ShowItem" />
+        <argument
+            android:name="itemType"
+            app:argType="string"
+            android:defaultValue='"video"' />
     </activity>
 
 

@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     >
     <item
-        android:id="@+id/popular_movies_fragment"
+        android:id="@+id/moviesFragment"
         android:title="@string/movies"
         android:icon="@drawable/ic_movie"
 
         />
     <item
-        android:id="@+id/series_fragment"
+        android:id="@+id/SeriesFragment"
         android:title="@string/series"
         android:icon="@drawable/ic_tv"
         />

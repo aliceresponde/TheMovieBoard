@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aliceresponde.themovieboard.data.repository.MoviesRepository
 import com.aliceresponde.themovieboard.movietoShow
+import com.aliceresponde.themovieboard.toShowItem
+import com.aliceresponde.themovieboard.ui.model.ShowItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,6 +29,9 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
 
     val ratedMovies = repository.getRatedMovies().movietoShow()
 
+    private val _moviesByName = MutableLiveData<List<ShowItem>>()
+    val moviesByName: LiveData<List<ShowItem>> get() = _moviesByName
+
     fun fetchPopularMovies() {
         viewModelScope.launch {
             _isViewLoading.value = true
@@ -43,6 +48,17 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
         }
     }
 
-    fun findMoviesByName(name: String) = repository.getMovieByName(name).movietoShow()
+    fun fetchMoviesByName(name: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.fetchMoviesByName(name)
+                val byName = repository.getMovieByName(name).map {
+                    it.toShowItem()
+                }
+                _moviesByName.postValue(emptyList())
+                _moviesByName.postValue(byName)
+            }
+        }
+    }
 }
 
