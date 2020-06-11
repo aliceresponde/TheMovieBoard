@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -17,6 +15,7 @@ import com.aliceresponde.themovieboard.databinding.FragmentMoviesBinding
 import com.aliceresponde.themovieboard.hideKeyboard
 import com.aliceresponde.themovieboard.ui.main.ShowItemsAdapter
 import com.aliceresponde.themovieboard.ui.model.ShowItem
+import com.google.android.material.snackbar.Snackbar
 import com.mancj.materialsearchbar.MaterialSearchBar
 
 class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
@@ -26,7 +25,6 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     lateinit var factory: MoviesViewModelFactory
     lateinit var viewModel: MoviesViewModel
     lateinit var binding: FragmentMoviesBinding
-    lateinit var dialog : AlertDialog.Builder
 
     val adapter: ShowItemsAdapter by lazy { ShowItemsAdapter(listOf(), this) }
 
@@ -39,12 +37,6 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         binding.lifecycleOwner = this
 
         val app = (activity?.application) as MovieApp
-
-        activity?.let {
-            dialog = AlertDialog.Builder(it)
-            dialog.setMessage(getString(R.string.no_internet_message))
-        }
-
         factory = MoviesViewModelFactory(app.provideMoviesRepository())
         viewModel = ViewModelProvider(this, factory).get(MoviesViewModel::class.java)
         binding.viewModel = viewModel
@@ -61,8 +53,12 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         viewModel.getPopularMovies()
         viewModel.movies.observe(viewLifecycleOwner, Observer { cleanAndSet(it) })
         viewModel.isInternetOn.observe(viewLifecycleOwner, Observer {
-            if (it)
-                dialog.show()
+            if (!it) {
+                view?.let {
+                    Snackbar.make(it, R.string.no_internet_message, Snackbar.LENGTH_LONG)
+                        .show()
+                }
+            }
         })
 
         return binding.root

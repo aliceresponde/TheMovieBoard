@@ -1,5 +1,8 @@
 package com.aliceresponde.themovieboard.ui.main.movie
 
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +18,12 @@ import javax.inject.Inject
 
 class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : ViewModel() {
 
+    private var _recyclerVisibility: MutableLiveData<Int> = MutableLiveData(VISIBLE)
+    val recyclerVisibility: LiveData<Int> get() = _recyclerVisibility
+
+    private var _noDataVisibility: MutableLiveData<Int> = MutableLiveData(VISIBLE)
+    val noDataVisibility: LiveData<Int> get() = _noDataVisibility
+
     private val _internetConection = MutableLiveData(true)
     val isInternetOn: LiveData<Boolean> get() = _internetConection
 
@@ -29,10 +38,10 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     private fun fetchPopularMovies() {
         viewModelScope.launch {
             try {
-                _internetConection.value = true
+                _internetConection.postValue(true)
                 withContext(Dispatchers.IO) { repository.fetchPopularMovies() }
             } catch (e: NoInternetException) {
-                _internetConection.value = false
+                _internetConection.postValue(false)
                 getPopularMovies()
             }
         }
@@ -41,10 +50,10 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     private fun fetchRatedMovies() {
         viewModelScope.launch {
             try {
-                _internetConection.value = true
+                _internetConection.postValue(true)
                 withContext(Dispatchers.IO) { repository.fetchPopularMovies() }
             } catch (e: NoInternetException) {
-                _internetConection.value = false
+                _internetConection.postValue(false)
                 getRatedMpvies()
             }
         }
@@ -55,6 +64,7 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
             withContext(Dispatchers.IO) {
                 val ratedMmovies = repository.getRatedMovies().map { it.toShowItem() }
                 _movies.postValue(ratedMmovies)
+                updateLayout(ratedMmovies)
             }
         }
     }
@@ -65,6 +75,7 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
             withContext(Dispatchers.IO) {
                 val popularMovies = repository.getPopularMovies().map { it.toShowItem() }
                 _movies.postValue(popularMovies)
+                updateLayout(popularMovies)
             }
         }
     }
@@ -77,12 +88,24 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
                     repository.fetchMoviesByName(name)
                     val byName = repository.getMovieByName(name).map { it.toShowItem() }
                     _movies.postValue(byName)
+                    updateLayout(byName)
                 } catch (e: NoInternetException) {
                     _internetConection.postValue(false)
                     val byName = repository.getMovieByName(name).map { it.toShowItem() }
                     _movies.postValue(byName)
+                    updateLayout(byName)
                 }
             }
+        }
+    }
+
+    private fun updateLayout(data: List<ShowItem>) {
+        if (data.isNullOrEmpty()) {
+            _recyclerVisibility.postValue(GONE)
+            _noDataVisibility.postValue(VISIBLE)
+        } else {
+            _recyclerVisibility.postValue(VISIBLE)
+            _noDataVisibility.postValue(GONE)
         }
     }
 }
