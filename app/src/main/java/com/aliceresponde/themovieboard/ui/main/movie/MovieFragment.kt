@@ -46,12 +46,13 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.type_popular -> viewModel.getPopularMovies()
-                else -> viewModel.getRatedMpvies()
+                R.id.tape_rated -> viewModel.getRatedMpvies()
+                else -> {}
             }
         }
 
         viewModel.getPopularMovies()
-        viewModel.movies.observe(viewLifecycleOwner, Observer { cleanAndSet(it) })
+        viewModel.movies.observe(viewLifecycleOwner, Observer { adapter.updateData(it) })
         viewModel.isInternetOn.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 view?.let {
@@ -64,11 +65,6 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         return binding.root
     }
 
-    private fun cleanAndSet(it: List<ShowItem>) {
-        adapter.updateData(it)
-    }
-
-
     override fun onButtonClicked(buttonCode: Int) {
     }
 
@@ -79,6 +75,8 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     override fun onSearchConfirmed(text: CharSequence?) {
         hideKeyboard()
         viewModel.fetchMoviesByName(text.toString())
+        binding.searchBar.text = ""
+        binding.radioGroup.clearCheck()
     }
 
     override fun onItemClickListener(item: ShowItem) {

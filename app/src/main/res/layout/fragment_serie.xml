@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.aliceresponde.themovieboard.ui.main.serie.SeriesViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,29 +46,62 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:checked="true"
-                android:text="@string/popular_movies" />
+                android:text="@string/popular_series" />
 
             <RadioButton
                 android:id="@+id/tape_rated"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/rated_movies" />
+                android:text="@string/rated_series" />
         </RadioGroup>
+
+
+        <ImageView
+            android:id="@+id/errorImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="119dp"
+            android:src="@drawable/ic_alert"
+            android:tint="@color/colorPrimary"
+            android:visibility="@{vm.noDataVisibility}"
+            app:layout_constraintBottom_toBottomOf="@+id/recycler"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+            app:layout_constraintVertical_bias="0.100000024" />
+
+
+        <TextView
+            android:id="@+id/errorTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:gravity="center_horizontal"
+            android:text="@string/no_data_message"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:visibility="@{vm.noDataVisibility}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/recycler"
+            app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginBottom="10dp"
             android:padding="10dp"
+            android:visibility="@{vm.recyclerVisibility}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/searchBar"
-            app:layout_constraintStart_toStartOf="@+id/searchBar"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-            app:spanCount="2"
-            tools:listitem="@layout/entretaiment_item"
-            />
+            app:spanCount="3"
+            tools:itemCount="23"
+            tools:listitem="@layout/entretaiment_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

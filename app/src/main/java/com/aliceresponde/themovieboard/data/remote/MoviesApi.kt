@@ -37,13 +37,13 @@ interface MoviesApi {
 
 //    ======================================== Serie ========================================
 
-    // https://api.themoviedb.org/3/tv/60735?api_key=dc444e2fa09525a80a60d5db7ff1bb07
+    // https://api.themoviedb.org/3/tv/60735/videos?api_key=dc444e2fa09525a80a60d5db7ff1bb07
     @GET("tv/{tv_id}/videos")
     suspend fun getSerieVideos(@Path("tv_id") id: Int): Response<SerieVideoResponse>
 
     //https://api.themoviedb.org/3/search/tv?api_key=dc444e2fa09525a80a60d5db7ff1bb07&query=xena
     @GET("search/tv")
-    suspend fun searchSerie(@Query("query") keyWord: String): Response<SerieResponse>
+    suspend fun searchSerieByName(@Query("query") keyWord: String): Response<SerieResponse>
 
     // https://api.themoviedb.org/3/tv/popular?api_key=dc444e2fa09525a80a60d5db7ff1bb07
     @GET("tv/popular")

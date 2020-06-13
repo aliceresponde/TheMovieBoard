@@ -14,7 +14,7 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveMovie(movie: Movie)
 
-    @Query("SELECT * FROM movies WHERE  UPPER(title) LIKE '%'|| UPPER(:value) || '%' limit 30")
+    @Query("SELECT * FROM movies WHERE  UPPER(title) LIKE '%'|| UPPER(:value) || '%' ORDER BY title ASC  limit 30")
     suspend fun getMoviesByTitle(value: String): List<Movie>
 
     @Query("SELECT * FROM movies limit 30")

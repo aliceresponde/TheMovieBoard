@@ -1,6 +1,5 @@
 package com.aliceresponde.themovieboard.ui.main.movie
 
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.lifecycle.LiveData
@@ -18,10 +17,10 @@ import javax.inject.Inject
 
 class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : ViewModel() {
 
-    private var _recyclerVisibility: MutableLiveData<Int> = MutableLiveData(VISIBLE)
+    private var _recyclerVisibility: MutableLiveData<Int> = MutableLiveData(GONE)
     val recyclerVisibility: LiveData<Int> get() = _recyclerVisibility
 
-    private var _noDataVisibility: MutableLiveData<Int> = MutableLiveData(VISIBLE)
+    private var _noDataVisibility: MutableLiveData<Int> = MutableLiveData(GONE)
     val noDataVisibility: LiveData<Int> get() = _noDataVisibility
 
     private val _internetConection = MutableLiveData(true)

@@ -3,7 +3,10 @@ package com.aliceresponde.themovieboard
 import android.app.Activity
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -30,7 +33,7 @@ fun SerieResult.toSerieEntity(): Serie {
         id = id,
         name = name,
         overview = if (overview.isNullOrEmpty()) "" else overview,
-        date = date,
+        date = if (date.isNullOrEmpty()) "" else date ,
         imageUrl = if (imageUrl.isNullOrEmpty()) "" else imageUrl,
         voteAverage = voteAverage,
         popularity = popularity
@@ -70,6 +73,8 @@ fun LiveData<List<Serie>>.serietoShow(): LiveData<List<ShowItem>> =
         it.map { serie -> serie.toShowItem() }
     }
 
+
+// ----------------------------------------------Key Board -----------------------------------
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
 }

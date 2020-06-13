@@ -1,20 +1,23 @@
 package com.aliceresponde.themovieboard.data.repository
 
+import com.aliceresponde.themovieboard.data.local.Serie
 import com.aliceresponde.themovieboard.data.remote.NoInternetException
-import com.aliceresponde.themovieboard.ui.model.ShowItem
+import com.aliceresponde.themovieboard.data.remote.response.SerieVideoResult
 
 interface SeriesRepository {
     @Throws(NoInternetException::class)
-    suspend fun getPopularSeries(): List<ShowItem>
+    suspend fun fetchPopularSerie()
 
     @Throws(NoInternetException::class)
-    suspend fun getRatedSeries(): List<ShowItem>
+    suspend fun fetchRatedMovies()
 
     @Throws(NoInternetException::class)
-    suspend fun getSerieVideo(serieId: Int): String
+    suspend fun fetchSerieByName(name: String)
 
     @Throws(NoInternetException::class)
-    suspend fun searchSerieByName(name: String): List<ShowItem>
+    suspend fun getSerieVideo(serieId: Int): List<SerieVideoResult>
 
-    suspend fun getSerieById(serieId: Int): ShowItem
+    suspend fun getPopularSerie(): List<Serie>
+    suspend fun getRatedSerie(): List<Serie>
+    suspend fun getSerieByName(name: String): List<Serie>
 }

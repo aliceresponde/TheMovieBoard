@@ -1,61 +1,56 @@
 package com.aliceresponde.themovieboard.data.repository
 
+import com.aliceresponde.themovieboard.data.local.Serie
 import com.aliceresponde.themovieboard.data.local.SerieDao
 import com.aliceresponde.themovieboard.data.remote.MoviesApi
+import com.aliceresponde.themovieboard.data.remote.response.MovieVideoResult
 import com.aliceresponde.themovieboard.data.remote.response.SerieResponse
+import com.aliceresponde.themovieboard.data.remote.response.SerieVideoResponse
+import com.aliceresponde.themovieboard.data.remote.response.SerieVideoResult
 import com.aliceresponde.themovieboard.toSerieEntity
-import com.aliceresponde.themovieboard.toShowItem
-import com.aliceresponde.themovieboard.ui.model.ShowItem
 import retrofit2.Response
 
 class SeriesRepositoryImpl(
     private val serieDao: SerieDao,
     private val service: MoviesApi
 ) : SeriesRepository {
-
-    override suspend fun getPopularSeries(): List<ShowItem> {
+    override suspend fun fetchPopularSerie() {
         val response = service.getPopularSerie()
-        saveSeriesFromRemote(response)
-        return serieDao.getPopularSeries().map { it.toShowItem() }
-    }
+        saveSerieFromRemote(response)    }
 
-    override suspend fun getRatedSeries(): List<ShowItem> {
+    override suspend fun fetchRatedMovies() {
         val response = service.getTopRatedSeries()
-        saveSeriesFromRemote(response)
-        return serieDao.getRatedSeries().map { it.toShowItem() }
+        saveSerieFromRemote(response)    }
+
+    override suspend fun fetchSerieByName(name: String) {
+        val response = service.searchSerieByName(name)
+        saveSerieFromRemote(response)
     }
 
-    override suspend fun getSerieVideo(serieId: Int): String {
+    override suspend fun getSerieVideo(serieId: Int): List<SerieVideoResult> {
         val response = service.getSerieVideos(serieId)
-        var videoKey = ""
-        return if (response.isSuccessful) {
-            response.body()?.id
-            videoKey = response.body()?.let {
-                it.results.first().videoId
-            } ?: ""
-            serieDao.updateVideo(serieId, videoKey)
-            videoKey
-        } else {
-            videoKey
-        }
+        val videoList = response.body()?.serieVideos
+        return videoList?.let { it } ?: listOf()
     }
 
-    override suspend fun searchSerieByName(name: String): List<ShowItem> {
-        val response = service.searchSerie(name)
-        saveSeriesFromRemote(response)
-        return serieDao.getSeriesByName(name).map { it.toShowItem() }
+    override suspend fun getPopularSerie(): List<Serie> {
+        return serieDao.getPopularSeries()
     }
 
-
-    override suspend fun getSerieById(serieId: Int): ShowItem {
-        return serieDao.getSerieById(serieId).toShowItem()
+    override suspend fun getRatedSerie(): List<Serie> {
+        return  serieDao.getRatedSeries()
     }
 
-    private fun saveSeriesFromRemote(response: Response<SerieResponse>) {
+    override suspend fun getSerieByName(name: String): List<Serie> {
+        return serieDao.getSeriesByName(name)
+    }
+
+    private  fun saveSerieFromRemote(response: Response<SerieResponse>) {
         if (response.isSuccessful) {
             response.body()?.series?.run {
                 map { it.toSerieEntity() }.also { serieDao.insertAll(it) }
             }
         }
     }
+
 }

@@ -3,25 +3,24 @@ package com.aliceresponde.themovieboard.ui.detail
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.navArgs
 import coil.api.load
-import com.aliceresponde.themovieboard.MovieApp
 import com.aliceresponde.themovieboard.R
 import com.aliceresponde.themovieboard.databinding.ActivityDetailBinding
 import com.aliceresponde.themovieboard.ui.model.ShowItem
 
 class DetailActivity : AppCompatActivity() {
     lateinit var binding: ActivityDetailBinding
-    lateinit var item: ShowItem
-    lateinit var itemType: String
+    val args: DetailActivityArgs by navArgs()
+    private val item: ShowItem by lazy { args.showItem }
+    private val itemType: String by lazy { args.itemType }
+
+    private val TYPE_SERIE = "serie"
+    private val TYPE_MOVIE = "movie"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
-        val movieApp = application as MovieApp
-        intent?.let {
-            item = it.getParcelableExtra("showItem")
-            itemType = it.getStringExtra("itemType")
-        }
 
         with(binding) {
             image.load(item.imageUrl)

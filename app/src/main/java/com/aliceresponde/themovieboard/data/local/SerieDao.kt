@@ -14,7 +14,7 @@ interface SerieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun saveSerie(movie: Serie)
 
-    @Query("SELECT * FROM series WHERE  UPPER(name) LIKE '%' || UPPER(:value) || '%' limit 30")
+    @Query("SELECT * FROM series WHERE  UPPER(name) LIKE '%' || UPPER(:value) || '%' ORDER BY name ASC limit 30")
     fun getSeriesByName(value: String): List<Serie>
 
     @Query("SELECT * FROM series")
