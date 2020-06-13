@@ -23,7 +23,11 @@ class DetailActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_detail)
 
         with(binding) {
-            image.load(item.imageUrl)
+            image.load(item.imageUrl){
+                crossfade(true)
+                error(R.drawable.ic_movie)
+                placeholder(R.drawable.ic_movie)
+            }
             title.text = item.name
             releaseDate.text = item.date
             overView.text = item.overview

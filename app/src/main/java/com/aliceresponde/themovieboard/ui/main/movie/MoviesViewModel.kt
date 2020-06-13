@@ -59,6 +59,8 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     }
 
     fun getRatedMpvies() {
+        if (movies.value.isNullOrEmpty())
+            fetchRatedMovies()
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val ratedMmovies = repository.getRatedMovies().map { it.toShowItem() }
@@ -70,6 +72,8 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
 
 
     fun getPopularMovies() {
+        if (movies.value.isNullOrEmpty())
+            fetchPopularMovies()
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 val popularMovies = repository.getPopularMovies().map { it.toShowItem() }
@@ -80,6 +84,8 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     }
 
     fun fetchMoviesByName(name: String) {
+        if (name.isNullOrEmpty())
+            return
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {

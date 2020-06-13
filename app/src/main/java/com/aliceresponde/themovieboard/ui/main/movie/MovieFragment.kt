@@ -73,10 +73,10 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
+        binding.radioGroup.clearCheck()
         hideKeyboard()
         viewModel.fetchMoviesByName(text.toString())
         binding.searchBar.text = ""
-        binding.radioGroup.clearCheck()
     }
 
     override fun onItemClickListener(item: ShowItem) {

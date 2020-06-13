@@ -85,10 +85,10 @@ class SeriesFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     }
 
     override fun onSearchConfirmed(text: CharSequence?) {
+        binding.radioGroup.clearCheck()
         hideKeyboard()
         viewModel.fetchSeriesByName(text.toString())
         binding.searchBar.text = ""
-        binding.radioGroup.clearCheck()
     }
 
     override fun onItemClickListener(item: ShowItem) {

@@ -79,6 +79,8 @@ class SeriesViewModel(val repository: SeriesRepository) : ViewModel() {
     }
 
     fun fetchSeriesByName(name: String) {
+        if (name.isNullOrEmpty())
+           return
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
