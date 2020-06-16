@@ -27,7 +27,6 @@ class SeriesFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     private val adapter: ShowItemsAdapter by lazy { ShowItemsAdapter(listOf(), this) }
     private val ITEM_TYPE = "serie"
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,7 +86,7 @@ class SeriesFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     override fun onSearchConfirmed(text: CharSequence?) {
         binding.radioGroup.clearCheck()
         hideKeyboard()
-        viewModel.fetchSeriesByName(text.toString())
+        viewModel.getSeriesByName(text.toString())
         binding.searchBar.text = ""
     }
 

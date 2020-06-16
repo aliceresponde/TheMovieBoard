@@ -64,7 +64,7 @@
             android:src="@drawable/ic_alert"
             android:tint="@color/colorPrimary"
             android:visibility="@{vm.noDataVisibility}"
-            app:layout_constraintBottom_toBottomOf="@+id/recycler"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
@@ -75,7 +75,7 @@
             android:id="@+id/errorTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="24dp"
             android:gravity="center_horizontal"
             android:text="@string/no_data_message"
             android:textSize="24sp"
@@ -85,7 +85,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/recycler"
+            app:layout_constraintTop_toBottomOf="@+id/errorImage"
             app:layout_constraintVertical_bias="0.0" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -99,9 +99,10 @@
             app:layout_constraintEnd_toEndOf="@+id/searchBar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-            app:spanCount="3"
+            app:spanCount="2"
             tools:itemCount="23"
-            tools:listitem="@layout/entretaiment_item" />
+            tools:listitem="@layout/entretaiment_item"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

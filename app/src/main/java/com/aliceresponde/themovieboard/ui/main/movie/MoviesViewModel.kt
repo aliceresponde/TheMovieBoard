@@ -29,40 +29,31 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     private val _movies = MutableLiveData<List<ShowItem>>()
     val movies: LiveData<List<ShowItem>> get() = _movies
 
-    init {
-        fetchPopularMovies()
-        fetchRatedMovies()
+    private suspend fun fetchPopularMovies() {
+        try {
+            _internetConection.postValue(true)
+            repository.fetchPopularMovies()
+        } catch (e: NoInternetException) {
+            _internetConection.postValue(false)
+            getPopularMovies()
+        }
+
     }
 
-    private fun fetchPopularMovies() {
-        viewModelScope.launch {
-            try {
-                _internetConection.postValue(true)
-                withContext(Dispatchers.IO) { repository.fetchPopularMovies() }
-            } catch (e: NoInternetException) {
-                _internetConection.postValue(false)
-                getPopularMovies()
-            }
+    private suspend fun fetchRatedMovies() {
+        try {
+            _internetConection.postValue(true)
+            repository.fetchPopularMovies()
+        } catch (e: NoInternetException) {
+            _internetConection.postValue(false)
+            getRatedMovies()
         }
     }
 
-    private fun fetchRatedMovies() {
-        viewModelScope.launch {
-            try {
-                _internetConection.postValue(true)
-                withContext(Dispatchers.IO) { repository.fetchPopularMovies() }
-            } catch (e: NoInternetException) {
-                _internetConection.postValue(false)
-                getRatedMpvies()
-            }
-        }
-    }
-
-    fun getRatedMpvies() {
-        if (movies.value.isNullOrEmpty())
-            fetchRatedMovies()
+    fun getRatedMovies() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                fetchRatedMovies()
                 val ratedMmovies = repository.getRatedMovies().map { it.toShowItem() }
                 _movies.postValue(ratedMmovies)
                 updateLayout(ratedMmovies)
@@ -72,10 +63,9 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
 
 
     fun getPopularMovies() {
-        if (movies.value.isNullOrEmpty())
-            fetchPopularMovies()
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                fetchPopularMovies()
                 val popularMovies = repository.getPopularMovies().map { it.toShowItem() }
                 _movies.postValue(popularMovies)
                 updateLayout(popularMovies)
@@ -83,8 +73,8 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
         }
     }
 
-    fun fetchMoviesByName(name: String) {
-        if (name.isNullOrEmpty())
+    fun getMoviesByName(name: String) {
+        if (name.isEmpty())
             return
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -105,7 +95,7 @@ class MoviesViewModel @Inject constructor(val repository: MoviesRepository) : Vi
     }
 
     private fun updateLayout(data: List<ShowItem>) {
-        if (data.isNullOrEmpty()) {
+        if (data.isEmpty()) {
             _recyclerVisibility.postValue(GONE)
             _noDataVisibility.postValue(VISIBLE)
         } else {

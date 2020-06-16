@@ -28,38 +28,30 @@ class SeriesViewModel(val repository: SeriesRepository) : ViewModel() {
     private val _movies = MutableLiveData<List<ShowItem>>()
     val movies: LiveData<List<ShowItem>> get() = _movies
 
-    init {
-        fetchPopularSeries()
-        fetchRatedSeries()
-    }
-
-    private fun fetchPopularSeries() {
-        viewModelScope.launch {
-            try {
-                _isInternetOn.postValue(true)
-                withContext(Dispatchers.IO) { repository.fetchPopularSerie() }
-            } catch (e: NoInternetException) {
-                _isInternetOn.postValue(false)
-                getPopularSeries()
-            }
+    private suspend fun fetchPopularSeries() {
+        try {
+            _isInternetOn.postValue(true)
+            repository.fetchPopularSerie()
+        } catch (e: NoInternetException) {
+            _isInternetOn.postValue(false)
+            getPopularSeries()
         }
     }
 
-    private fun fetchRatedSeries() {
-        viewModelScope.launch {
-            try {
-                _isInternetOn.postValue(true)
-                withContext(Dispatchers.IO) { repository.fetchRatedMovies() }
-            } catch (e: NoInternetException) {
-                _isInternetOn.postValue(false)
-                getRatedSeries()
-            }
+    private suspend fun fetchRatedSeries() {
+        try {
+            _isInternetOn.postValue(true)
+            repository.fetchRatedMovies()
+        } catch (e: NoInternetException) {
+            _isInternetOn.postValue(false)
+            getRatedSeries()
         }
     }
 
     fun getRatedSeries() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                fetchRatedSeries()
                 val ratedMovies = repository.getRatedSerie().map { it.toShowItem() }
                 _movies.postValue(ratedMovies)
                 updateLayout(ratedMovies)
@@ -71,6 +63,7 @@ class SeriesViewModel(val repository: SeriesRepository) : ViewModel() {
     fun getPopularSeries() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                fetchPopularSeries()
                 val popularMovies = repository.getPopularSerie().map { it.toShowItem() }
                 _movies.postValue(popularMovies)
                 updateLayout(popularMovies)
@@ -78,9 +71,9 @@ class SeriesViewModel(val repository: SeriesRepository) : ViewModel() {
         }
     }
 
-    fun fetchSeriesByName(name: String) {
-        if (name.isNullOrEmpty())
-           return
+    fun getSeriesByName(name: String) {
+        if (name.isEmpty())
+            return
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {

@@ -46,7 +46,7 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.type_popular -> viewModel.getPopularMovies()
-                R.id.tape_rated -> viewModel.getRatedMpvies()
+                R.id.tape_rated -> viewModel.getRatedMovies()
                 else -> {}
             }
         }
@@ -75,7 +75,7 @@ class MovieFragment : Fragment(), MaterialSearchBar.OnSearchActionListener,
     override fun onSearchConfirmed(text: CharSequence?) {
         binding.radioGroup.clearCheck()
         hideKeyboard()
-        viewModel.fetchMoviesByName(text.toString())
+        viewModel.getMoviesByName(text.toString())
         binding.searchBar.text = ""
     }
 
